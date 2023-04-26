@@ -1,0 +1,15 @@
+.card-title {
+    margin: 20px 50px;
+}
+.input-window{
+    margin: 20px 50px 20px 50px;
+}
+.text-button {
+    margin: 30px 30px 10px 0px;
+    align-content: center;
+}
+.cards{
+    margin: 10px 20px 10px 50px;
+    display: flex;
+    justify-content: first baseline;
+}

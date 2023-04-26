@@ -1,12 +1,99 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
+
+<html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tips_Memo</title>
-</head>
-<body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css">
     
+    <title>カードアプリ</title>
+    <style>
+        .card {
+            width: 200px;
+            height: 100px;
+            background-color: lightgray;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <h1 class="card-title text-info my-4">やることリストカード</h1>
+    <input class="input-window" type="text" id="wordInput" placeholder="言葉を入力してください">
+    <button class="text-button" id="addButton">追加</button>
+    <div class="cards" id="cardContainer"></div>
+
+    <script>
+        // Local Storageからデータを取得
+        let cards = JSON.parse(localStorage.getItem('cards')) || [];
+
+        // カードを表示する関数
+        function renderCards() {
+            const cardContainer = document.getElementById('cardContainer');
+            cardContainer.innerHTML = '';
+
+            cards.forEach((cardData, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.textContent = cardData.word;
+                card.style.backgroundColor = cardData.color;
+
+                card.addEventListener('click', () => {
+                    // クリックすると色が変わる
+                    const color = getRandomColor();
+                    card.style.backgroundColor = color;
+                    cards[index].color = color;
+                    updateLocalStorage();
+                });
+
+                card.addEventListener('contextmenu', (e) => {
+                    // 右クリックするとカードが消える
+                    e.preventDefault();
+                    card.remove();
+                    cards.splice(index, 1);
+                    updateLocalStorage();
+                });
+
+                cardContainer.appendChild(card);
+            });
+        }
+
+        // 追加ボタンのクリックイベント
+        document.getElementById('addButton').addEventListener('click', () => {
+            const wordInput = document.getElementById('wordInput');
+            const word = wordInput.value.trim();
+            if (word) {
+                const cardData = {
+                    word: word,
+                    color: 'lightgray'
+                };
+                cards.push(cardData);
+                updateLocalStorage();
+                renderCards();
+                wordInput.value = '';
+            }
+        });
+
+        // Local Storageのデータを更新
+        function updateLocalStorage() {
+            localStorage.setItem('cards', JSON.stringify(cards));
+        }
+
+        // ランダムな色を生成する関数
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // 初期表示
+        renderCards();
+    </script>
 </body>
 </html>
